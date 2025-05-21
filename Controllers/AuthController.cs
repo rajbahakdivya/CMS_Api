@@ -1,8 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using CMS_Api.DTOs;
 using CMS_Api.Models;
 using CMS_Api.Services;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using System;
+using System.Threading.Tasks;
 
 namespace CMS_Api.Controllers
 {
@@ -12,11 +15,13 @@ namespace CMS_Api.Controllers
     {
         private readonly AppDbContext _context;
         private readonly ITenantService _tenantService;
+        private readonly IJwtService _jwtService;
 
-        public AuthController(AppDbContext context, ITenantService tenantService)
+        public AuthController(AppDbContext context, ITenantService tenantService, IJwtService jwtService)
         {
             _context = context;
             _tenantService = tenantService;
+            _jwtService = jwtService;
         }
 
         [HttpPost("register-tenant")]
@@ -65,23 +70,32 @@ namespace CMS_Api.Controllers
             return Ok(new { message = "User registered successfully" });
         }
 
-
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto dto)
         {
             var tenant = await _context.Tenants.FirstOrDefaultAsync(t => t.Identifier == dto.TenantIdentifier);
-            if (tenant == null) return Unauthorized("Invalid tenant");
+            if (tenant == null)
+                return Unauthorized("Invalid tenant");
 
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == dto.Email && u.TenantId == tenant.Id);
-            if (user == null) return Unauthorized("User not found");
+            if (user == null)
+                return Unauthorized("User not found");
 
             if (!BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
                 return Unauthorized("Invalid credentials");
 
-            // Token generation logic here (JWT)
-            return Ok(new { message = "Login successful", tenant = tenant.Name });
-        }
+            // Generate JWT token
+            var token = _jwtService.GenerateToken(user);
 
+            return Ok(new
+            {
+                message = "Login successful",
+                token,
+                tenant = tenant.Name,
+                userId = user.Id,
+                userEmail = user.Email
+            });
+        }
 
         [HttpPost("add-contact-info")]
         public async Task<IActionResult> AddContactInfo([FromBody] ContactInfoDto dto)
@@ -99,6 +113,5 @@ namespace CMS_Api.Controllers
 
             return Ok(new { message = "Contact information updated successfully." });
         }
-
     }
 }
