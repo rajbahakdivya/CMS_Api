@@ -1,12 +1,11 @@
 {
   "Version": 1,
-  "Hash": "XCiDninYbHg9RWihJAdsDxh1Na6ka3qayPrxg67wBcg=",
+  "Hash": "c4riUcvdoPc9U1rwjn3Tz2x0g8vBjGxZeViQCT7lYUY=",
   "Source": "CMS_Api",
   "BasePath": "_content/CMS_Api",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],
   "DiscoveryPatterns": [],
-  "Assets": [],
-  "Endpoints": []
+  "Assets": []
 }
