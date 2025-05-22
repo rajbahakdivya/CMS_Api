@@ -111,8 +111,24 @@ namespace CMS_Api.Controllers
             if (tenant == null)
                 return NotFound("Tenant not found");
 
-            return Ok(tenant);
+            var tenantDto = new TenantInfoDto
+            {
+                TenantId = tenant.TenantId,
+                AccountType = tenant.AccountType,
+                OrganizationName = tenant.OrganizationName,
+                PassportNumber = tenant.PassportNumber,
+                BarLicenseNumber = tenant.BarLicenseNumber,
+                LicenseIssuingAuthority = tenant.LicenseIssuingAuthority,
+                PrimaryContactNumber = tenant.PrimaryContactNumber,
+                SecondaryContactNumber = tenant.SecondaryContactNumber,
+                Address = tenant.Address,
+                PrimaryUserName = tenant.PrimaryUserName,
+                CreatedAt = tenant.CreatedAt
+            };
+
+            return Ok(tenantDto);
         }
+
 
         // ---------------------- UPDATE CONTACT INFO ----------------------
         // Endpoint: PUT api/auth/update-contact-info

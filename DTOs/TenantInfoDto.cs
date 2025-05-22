@@ -1,32 +1,18 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace CMS_Api.Models
+﻿namespace CMS_Api.DTOs
 {
-    public class Tenant
+    public class TenantInfoDto
     {
-        [Key]
         public int TenantId { get; set; }
-
-        [Required]
         public string AccountType { get; set; }
-
-        [Required]
-        [StringLength(100)]
         public string OrganizationName { get; set; }
-
         public string PassportNumber { get; set; }
         public string BarLicenseNumber { get; set; }
         public string LicenseIssuingAuthority { get; set; }
-
         public string? PrimaryContactNumber { get; set; }
         public string? SecondaryContactNumber { get; set; }
         public string? Address { get; set; }
         public string? PrimaryUserName { get; set; }
-
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-
-        // Navigation property
-        public ICollection<Client> Clients { get; set; }
+        public DateTime CreatedAt { get; set; }
     }
+
 }
