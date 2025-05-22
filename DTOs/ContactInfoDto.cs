@@ -4,9 +4,10 @@ namespace CMS_Api.DTOs
 {
 	public class ContactInfoDto
 	{
-		public Guid TenantId { get; set; } // Or use `Identifier` if you prefer
-		public string ContactPersonFullName { get; set; }
-		public string ContactEmail { get; set; }
-		public string ContactPhoneNumber { get; set; }
+        public string? PrimaryContactNumber { get; set; }
+        public string? SecondaryContactNumber { get; set; }
+        public string? Address { get; set; }
+        public string? PrimaryUserName { get; set; }
+    
 	}
 }

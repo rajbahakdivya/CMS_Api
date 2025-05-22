@@ -4,6 +4,8 @@ using CMS_Api.DTOs;
 using CMS_Api.Models;
 using System.Threading.Tasks;
 using System;
+using CMS_Api.Data;
+
 
 namespace CMS_Api.Controllers
 {

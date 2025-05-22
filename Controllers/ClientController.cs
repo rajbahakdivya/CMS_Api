@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using CMS_Api.DTOs;
+using CMS_Api.Data;
+
 using CMS_Api.Models;
 using CMS_Api.Services;
 using Microsoft.AspNetCore.Mvc;
