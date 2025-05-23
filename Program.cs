@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using CMS_Api.Data;
+using CMS_Api.AutoMapperConfig;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -59,6 +60,9 @@ builder.Services.AddSwaggerGen(options =>
         }
     });
 });
+
+// Register AutoMapper, telling it to scan the assembly where ClientProfile lives:
+builder.Services.AddAutoMapper(typeof(ClientProfile));
 
 // Register EF Core DbContext
 builder.Services.AddDbContext<AppDbContext>(options =>

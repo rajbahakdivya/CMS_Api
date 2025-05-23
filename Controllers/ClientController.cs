@@ -1,98 +1,82 @@
-using Microsoft.EntityFrameworkCore;
-using CMS_Api.DTOs;
+using AutoMapper;
 using CMS_Api.Data;
-
+using CMS_Api.DTOs;
 using CMS_Api.Models;
-using CMS_Api.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
-using System;
-
+using Microsoft.EntityFrameworkCore;
 
 namespace CMS_Api.Controllers
 {
-
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ClientController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly IMapper _mapper;
 
-        public ClientController(AppDbContext context)
+        public ClientController(AppDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> AddClient([FromBody] ClientDto dto)
+        // GET: api/Client
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<ClientReadDto>>> GetClients()
         {
-            var client = new Client
-            {
-                ClientName = dto.ClientName,
-                ClientType = dto.ClientType,
-                OrganizationName = dto.OrganizationName,
-                Email = dto.Email,
-                MobileNumber = dto.MobileNumber,
-                City = dto.City,
-                Country = dto.Country,
-                Gender = dto.Gender,
-                Description = dto.Description
-            };
+            var clients = await _context.Clients.ToListAsync();
+            return Ok(_mapper.Map<IEnumerable<ClientReadDto>>(clients));
+        }
 
+        // GET: api/Client/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<ClientReadDto>> GetClient(int id)
+        {
+            var client = await _context.Clients.FindAsync(id);
+            if (client == null)
+                return NotFound();
+
+            return Ok(_mapper.Map<ClientReadDto>(client));
+        }
+
+        // POST: api/Client
+        [HttpPost]
+        public async Task<ActionResult<ClientReadDto>> PostClient(ClientCreateDto dto)
+        {
+            var client = _mapper.Map<Client>(dto);
             _context.Clients.Add(client);
             await _context.SaveChangesAsync();
 
-            return Ok(new { message = "Client created successfully", client.Id });
+            var readDto = _mapper.Map<ClientReadDto>(client);
+            return CreatedAtAction(nameof(GetClient), new { id = client.ClientId }, readDto);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetClients()
-        {
-            var clients = await _context.Clients.ToListAsync();
-            return Ok(clients);
-        }
-
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetClient(Guid id)
-        {
-            var client = await _context.Clients.FindAsync(id);
-            if (client == null) return NotFound();
-
-            return Ok(client);
-        }
-
+        // PUT: api/Client/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateClient(Guid id, ClientDto dto)
+        public async Task<IActionResult> PutClient(int id, ClientCreateDto dto)
         {
-            var client = await _context.Clients.FindAsync(id);
-            if (client == null) return NotFound();
+            var existingClient = await _context.Clients.FindAsync(id);
+            if (existingClient == null)
+                return NotFound();
 
-            // update fields
-            client.ClientName = dto.ClientName;
-            client.ClientType = dto.ClientType;
-            client.OrganizationName = dto.OrganizationName;
-            client.Email = dto.Email;
-            client.MobileNumber = dto.MobileNumber;
-            client.City = dto.City;
-            client.Country = dto.Country;
-            client.Gender = dto.Gender;
-            client.Description = dto.Description;
-
+            _mapper.Map(dto, existingClient);
             await _context.SaveChangesAsync();
-            return Ok(client);
+            return NoContent();
         }
 
+        // DELETE: api/Client/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteClient(Guid id)
+        public async Task<IActionResult> DeleteClient(int id)
         {
             var client = await _context.Clients.FindAsync(id);
-            if (client == null) return NotFound(new { message = "Client not found" });
+            if (client == null)
+                return NotFound();
 
             _context.Clients.Remove(client);
             await _context.SaveChangesAsync();
-
-            return Ok(new { message = "Client deleted successfully" });
+            return NoContent();
         }
-
     }
 }

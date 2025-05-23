@@ -6,6 +6,8 @@ C:\Users\HP\source\repos\CMS_Api\CMS_Api\bin\Debug\net8.0\CMS_Api.deps.json
 C:\Users\HP\source\repos\CMS_Api\CMS_Api\bin\Debug\net8.0\CMS_Api.runtimeconfig.json
 C:\Users\HP\source\repos\CMS_Api\CMS_Api\bin\Debug\net8.0\CMS_Api.dll
 C:\Users\HP\source\repos\CMS_Api\CMS_Api\bin\Debug\net8.0\CMS_Api.pdb
+C:\Users\HP\source\repos\CMS_Api\CMS_Api\bin\Debug\net8.0\AutoMapper.dll
+C:\Users\HP\source\repos\CMS_Api\CMS_Api\bin\Debug\net8.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
 C:\Users\HP\source\repos\CMS_Api\CMS_Api\bin\Debug\net8.0\Azure.Core.dll
 C:\Users\HP\source\repos\CMS_Api\CMS_Api\bin\Debug\net8.0\Azure.Identity.dll
 C:\Users\HP\source\repos\CMS_Api\CMS_Api\bin\Debug\net8.0\BCrypt.Net-Next.dll
