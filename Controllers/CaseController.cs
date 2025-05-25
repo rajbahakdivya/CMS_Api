@@ -1,54 +1,74 @@
+using AutoMapper;
+using CMS_Api.Data;
+using CMS_Api.Dtos;
+using CMS_Api.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using CMS_Api.DTOs;
-using CMS_Api.Models;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using System;
-using CMS_Api.Data;
-
 
 namespace CMS_Api.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class CaseController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly IMapper _mapper;
 
-        public CaseController(AppDbContext context)
+        public CaseController(AppDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> AddCase([FromBody] CaseDto dto)
+        // GET: api/case
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<CaseReadDto>>> GetCases()
         {
-            var newCase = new Case
-            {
-                CaseTitle = dto.CaseTitle,
-                Status = dto.Status,
-                Court = dto.Court,
-                ClientId = dto.ClientId
-            };
+            var cases = await _context.Cases.ToListAsync();
+            return Ok(_mapper.Map<IEnumerable<CaseReadDto>>(cases));
+        }
 
-            _context.Cases.Add(newCase);
+        // GET: api/case/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<CaseReadDto>> GetCase(int id)
+        {
+            var caseEntity = await _context.Cases.FindAsync(id);
+            if (caseEntity == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(_mapper.Map<CaseReadDto>(caseEntity));
+        }
+
+        // POST: api/case
+        [HttpPost]
+        public async Task<ActionResult<CaseReadDto>> CreateCase(CaseCreateDto dto)
+        {
+            var caseEntity = _mapper.Map<Case>(dto);
+            _context.Cases.Add(caseEntity);
             await _context.SaveChangesAsync();
 
-            return Ok(new { message = "Case added", newCase.Id });
+            var readDto = _mapper.Map<CaseReadDto>(caseEntity);
+            return CreatedAtAction(nameof(GetCase), new { id = readDto.Id }, readDto);
         }
 
-         [HttpGet("client/{clientId}")]
-         public async Task<IActionResult> GetCasesByClient(Guid clientId)
-         {
-           var cases = await _context.Cases
-              .Where(c => c.ClientId == clientId)
-           .Include(c => c.Client)
-           .ToListAsync();
+        // DELETE: api/case/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteCase(int id)
+        {
+            var caseEntity = await _context.Cases.FindAsync(id);
+            if (caseEntity == null)
+            {
+                return NotFound();
+            }
 
-         return Ok(cases);
+            _context.Cases.Remove(caseEntity);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
         }
-
-        
-
     }
 }

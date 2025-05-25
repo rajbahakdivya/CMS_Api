@@ -2,6 +2,8 @@
 {
     public class ClientReadDto
     {
+
+        // For Admin : add new client
         public int ClientId { get; set; }
         public string AccountType { get; set; }
         public string OrganizationName { get; set; }

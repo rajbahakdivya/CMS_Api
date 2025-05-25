@@ -21,9 +21,15 @@ namespace CMS_Api.Models
         public string Status { get; set; }       
         public string RecentCase { get; set; }   // Recent case title or status
 
-
+        // For ClientProfile
+        public string Country { get; set; }
+        public string MobileNumber { get; set; }
+        public string Gender { get; set; }
+        public string City { get; set; }
+        public string Description { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime? UpdatedAt { get; set; }
     }
 
 }

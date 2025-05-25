@@ -1,12 +1,10 @@
-using System;
-
-namespace CMS_Api.DTOs
+﻿namespace CMS_Api.Dtos
 {
-    public class CaseDto
+    public class CaseCreateDto
     {
         public string CaseTitle { get; set; }
         public string Status { get; set; }
         public string Court { get; set; }
-        public Guid ClientId { get; set; }
+        public int ClientId { get; set; }
     }
 }

@@ -53,9 +53,9 @@ namespace CMS_Api.Controllers
             return CreatedAtAction(nameof(GetClient), new { id = client.ClientId }, readDto);
         }
 
-        // PUT: api/Client/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutClient(int id, ClientCreateDto dto)
+        // (For client profile)PUT: api/Client/5 
+        [HttpPut("{id}/addnewClient")]
+        public async Task<IActionResult> UpdateBasicInfo(int id, ClientCreateDto dto)
         {
             var existingClient = await _context.Clients.FindAsync(id);
             if (existingClient == null)
@@ -63,7 +63,70 @@ namespace CMS_Api.Controllers
 
             _mapper.Map(dto, existingClient);
             await _context.SaveChangesAsync();
+
             return NoContent();
+        }
+
+        // PUT: api/Client/5/profile
+        [HttpPut("{id}/clientProfile")]
+        public async Task<ActionResult<ClientReadDto>> UpdateClientProfile(
+    int id,
+    [FromBody] ClientProfileUpdateDto dto)
+        {
+            // Validate model
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var existingClient = await _context.Clients.FindAsync(id);
+            if (existingClient == null)
+            {
+                return NotFound(new { Message = $"Client with ID {id} not found" });
+            }
+
+            try
+            {
+                // Update only profile-related fields
+                existingClient.ClientName = dto.ClientName;
+                existingClient.AccountType = dto.AccountType;
+                existingClient.OrganizationName = dto.OrganizationName;
+                existingClient.PassportNumber = dto.PassportNumber;
+                existingClient.Email = dto.Email;
+                existingClient.Country = dto.Country;
+                existingClient.MobileNumber = dto.MobileNumber;
+                existingClient.Gender = dto.Gender;
+                existingClient.City = dto.City;
+                existingClient.Description = dto.Description;
+                existingClient.UpdatedAt = DateTime.UtcNow;
+
+                await _context.SaveChangesAsync();
+
+                // Return the updated client information
+                var updatedClientDto = _mapper.Map<ClientReadDto>(existingClient);
+                return Ok(updatedClientDto);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ClientExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                return StatusCode(500, new { Message = "An error occurred while updating the client profile" });
+            }
+        }
+
+        private bool ClientExists(int id)
+        {
+            return _context.Clients.Any(e => e.ClientId == id);
         }
 
         // DELETE: api/Client/5

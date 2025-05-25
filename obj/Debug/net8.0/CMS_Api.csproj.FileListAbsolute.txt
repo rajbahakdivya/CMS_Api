@@ -1,5 +1,6 @@
 C:\Users\HP\source\repos\CMS_Api\CMS_Api\bin\Debug\net8.0\appsettings.Development.json
 C:\Users\HP\source\repos\CMS_Api\CMS_Api\bin\Debug\net8.0\appsettings.json
+C:\Users\HP\source\repos\CMS_Api\CMS_Api\bin\Debug\net8.0\CMS_Api.staticwebassets.runtime.json
 C:\Users\HP\source\repos\CMS_Api\CMS_Api\bin\Debug\net8.0\CMS_Api.staticwebassets.endpoints.json
 C:\Users\HP\source\repos\CMS_Api\CMS_Api\bin\Debug\net8.0\CMS_Api.exe
 C:\Users\HP\source\repos\CMS_Api\CMS_Api\bin\Debug\net8.0\CMS_Api.deps.json

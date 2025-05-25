@@ -11,6 +11,7 @@ namespace CMS_Api.AutoMapperConfig
         {
             CreateMap<Client, ClientReadDto>();
             CreateMap<ClientCreateDto, Client>();
+            CreateMap<ClientProfileUpdateDto, Client>();
         }
     }
 }

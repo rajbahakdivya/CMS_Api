@@ -1,12 +1,228 @@
 {
   "Version": 1,
-  "Hash": "XCiDninYbHg9RWihJAdsDxh1Na6ka3qayPrxg67wBcg=",
+  "Hash": "zGfo+73QndgIAOIkrS2RZ/vvbczFylKW295UEJPXtCw=",
   "Source": "CMS_Api",
   "BasePath": "_content/CMS_Api",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],
-  "DiscoveryPatterns": [],
-  "Assets": [],
-  "Endpoints": []
+  "DiscoveryPatterns": [
+    {
+      "Name": "CMS_Api\\wwwroot",
+      "Source": "CMS_Api",
+      "ContentRoot": "C:\\Users\\HP\\source\\repos\\CMS_Api\\CMS_Api\\wwwroot\\",
+      "BasePath": "_content/CMS_Api",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "C:\\Users\\HP\\source\\repos\\CMS_Api\\CMS_Api\\wwwroot\\uploads\\documents\\20250525073728839_divyaCV.pdf",
+      "SourceId": "CMS_Api",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\HP\\source\\repos\\CMS_Api\\CMS_Api\\wwwroot\\",
+      "BasePath": "_content/CMS_Api",
+      "RelativePath": "uploads/documents/20250525073728839_divyaCV#[.{fingerprint}]?.pdf",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "d9ga1jntmh",
+      "Integrity": "LxKTUsk8p2/ujR4PrK/PghPN+8kN/5IbJd+pL/UL1cI=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\uploads\\documents\\20250525073728839_divyaCV.pdf"
+    },
+    {
+      "Identity": "C:\\Users\\HP\\source\\repos\\CMS_Api\\CMS_Api\\wwwroot\\uploads\\documents\\20250525082701629_divya.doc",
+      "SourceId": "CMS_Api",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\HP\\source\\repos\\CMS_Api\\CMS_Api\\wwwroot\\",
+      "BasePath": "_content/CMS_Api",
+      "RelativePath": "uploads/documents/20250525082701629_divya#[.{fingerprint}]?.doc",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "7y2ep076z1",
+      "Integrity": "kVCvKhLjcOPYEpyAaeb7CPlFk0z8xVhTwJdi3t9hYKo=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\uploads\\documents\\20250525082701629_divya.doc"
+    }
+  ],
+  "Endpoints": [
+    {
+      "Route": "uploads/documents/20250525073728839_divyaCV.d9ga1jntmh.pdf",
+      "AssetFile": "C:\\Users\\HP\\source\\repos\\CMS_Api\\CMS_Api\\wwwroot\\uploads\\documents\\20250525073728839_divyaCV.pdf",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "136255"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/pdf"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"LxKTUsk8p2/ujR4PrK/PghPN+8kN/5IbJd+pL/UL1cI=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 25 May 2025 07:37:28 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "d9ga1jntmh"
+        },
+        {
+          "Name": "label",
+          "Value": "uploads/documents/20250525073728839_divyaCV.pdf"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-LxKTUsk8p2/ujR4PrK/PghPN+8kN/5IbJd+pL/UL1cI="
+        }
+      ]
+    },
+    {
+      "Route": "uploads/documents/20250525073728839_divyaCV.pdf",
+      "AssetFile": "C:\\Users\\HP\\source\\repos\\CMS_Api\\CMS_Api\\wwwroot\\uploads\\documents\\20250525073728839_divyaCV.pdf",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "136255"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/pdf"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"LxKTUsk8p2/ujR4PrK/PghPN+8kN/5IbJd+pL/UL1cI=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 25 May 2025 07:37:28 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-LxKTUsk8p2/ujR4PrK/PghPN+8kN/5IbJd+pL/UL1cI="
+        }
+      ]
+    },
+    {
+      "Route": "uploads/documents/20250525082701629_divya.7y2ep076z1.doc",
+      "AssetFile": "C:\\Users\\HP\\source\\repos\\CMS_Api\\CMS_Api\\wwwroot\\uploads\\documents\\20250525082701629_divya.doc",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "63488"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/msword"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"kVCvKhLjcOPYEpyAaeb7CPlFk0z8xVhTwJdi3t9hYKo=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 25 May 2025 08:27:01 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "7y2ep076z1"
+        },
+        {
+          "Name": "label",
+          "Value": "uploads/documents/20250525082701629_divya.doc"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-kVCvKhLjcOPYEpyAaeb7CPlFk0z8xVhTwJdi3t9hYKo="
+        }
+      ]
+    },
+    {
+      "Route": "uploads/documents/20250525082701629_divya.doc",
+      "AssetFile": "C:\\Users\\HP\\source\\repos\\CMS_Api\\CMS_Api\\wwwroot\\uploads\\documents\\20250525082701629_divya.doc",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "63488"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/msword"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"kVCvKhLjcOPYEpyAaeb7CPlFk0z8xVhTwJdi3t9hYKo=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 25 May 2025 08:27:01 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-kVCvKhLjcOPYEpyAaeb7CPlFk0z8xVhTwJdi3t9hYKo="
+        }
+      ]
+    }
+  ]
 }

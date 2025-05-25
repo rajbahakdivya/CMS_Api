@@ -62,7 +62,9 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 // Register AutoMapper, telling it to scan the assembly where ClientProfile lives:
-builder.Services.AddAutoMapper(typeof(ClientProfile));
+//builder.Services.AddAutoMapper(typeof(ClientProfile));
+builder.Services.AddAutoMapper(typeof(ClientProfile).Assembly);
+
 
 // Register EF Core DbContext
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -107,6 +109,9 @@ builder.Services.AddAuthentication(options =>
         }
     };
 });
+
+
+builder.WebHost.UseWebRoot("wwwroot");
 
 var app = builder.Build();
 
