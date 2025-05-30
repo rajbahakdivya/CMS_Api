@@ -2,44 +2,47 @@
 using CMS_Api.Models;
 using Microsoft.EntityFrameworkCore;
 using CMS_Api.Data;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace CMS_Api.Services
 {
     public class AuthService
     {
         private readonly AppDbContext _context;
+        private readonly IConfiguration _configuration;
 
-        public AuthService(AppDbContext context)
+        public AuthService(AppDbContext context, IConfiguration configuration)
         {
             _context = context;
+            _configuration = configuration;
         }
 
-        // ---------------- Register a New User ----------------
-        public async Task<string> RegisterUserAsync(RegisterUserDto dto)
+        
+
+        public string GenerateJwtToken(int tenantId)
         {
-            // Check if email already exists for the tenant
-            var existingUser = await _context.Users
-                .FirstOrDefaultAsync(u => u.Email == dto.Email && u.TenantId == dto.TenantId);
-
-            if (existingUser != null)
+            var jwtSettings = _configuration.GetSection("JwtSettings");
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["SecretKey"]));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+            var sessionId = Guid.NewGuid().ToString();
+            var claims = new[]
             {
-                return "User with this email already exists for the tenant.";
-            }
-
-            // Hash password using BCrypt
-            var hashedPassword = BCrypt.Net.BCrypt.HashPassword(dto.Password);
-
-            var user = new User
-            {
-                Email = dto.Email,
-                Password = hashedPassword,
-                TenantId = dto.TenantId
+                new Claim("tenantId", tenantId.ToString())
             };
 
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
+            var token = new JwtSecurityToken(
+                issuer: jwtSettings["Issuer"],
+                audience: jwtSettings["Audience"],
+                claims: claims,
+                expires: DateTime.UtcNow.AddMinutes(5),
+                signingCredentials: credentials
+            );
 
-            return "User registered successfully.";
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
 }

@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Services\AuthService\" />
     <Folder Include="wwwroot\uploads\documents\" />
   </ItemGroup>
 

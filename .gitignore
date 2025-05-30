@@ -1,0 +1,38 @@
+# Build results
+bin/
+obj/
+*.exe
+*.dll
+*.pdb
+
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.vsidx
+
+# Static web assets
+**/staticwebassets.*
+
+# NuGet
+*.nupkg
+packages/
+project.assets.json
+project.lock.json
+
+# Logs and cache
+*.log
+*.cache
+
+# VS Code
+.vscode/
+
+# Rider
+.idea/
+
+# Others
+*.tmp
+*.bak
+*.db

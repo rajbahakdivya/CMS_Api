@@ -5,6 +5,7 @@ using CMS_Api.Models;
 using CMS_Api.Services;
 using Microsoft.AspNetCore.Authorization;
 using CMS_Api.Data;
+using Azure;
 
 
 namespace CMS_Api.Controllers
@@ -48,28 +49,37 @@ namespace CMS_Api.Controllers
 
             _context.Tenants.Add(tenant);
             await _context.SaveChangesAsync();
+            var TenantExists = await _context.Tenants
+                .FirstOrDefaultAsync(u => u.BarLicenseNumber == dto.BarLicenseNumber);
 
-            return Ok(new { tenantId = tenant.TenantId, message = "Tenant registered successfully" });
+            if (TenantExists == null)
+            {
+                return NotFound("Tenant not found");
+            }
+            var token = _authService.GenerateJwtToken(TenantExists.TenantId);
+
+            
+            return Ok(new { errorcode = 0, message = "Tenant registered successfully" , token  = token });
         }
 
         // ---------------------- REGISTER USER ----------------------
         // Endpoint: POST api/auth/register-user
         [HttpPost("register-user")]
-        public async Task<IActionResult> RegisterUser([FromBody] RegisterUserDto dto)
+        public async Task<IActionResult> RegisterUser([FromHeader(Name = "Tenant-ID")] int tenantId, [FromBody] RegisterUserDto dto)
         {
-            var tenant = await _context.Tenants.FindAsync(dto.TenantId);
+            var tenant = tenantId;
             if (tenant == null)
-                return BadRequest("Invalid TenantId.");
+                return BadRequest("Invalid TenantID or TenantID missing.");
 
-            var userExists = await _context.Users.AnyAsync(u => u.Email == dto.Email && u.TenantId == dto.TenantId);
+            var userExists = await _context.Users.AnyAsync(u => u.Email == dto.Email);
             if (userExists)
-                return BadRequest("User already exists for this tenant.");
+                return BadRequest("Username already taken, try another email ID or create new account");
 
             var user = new User
             {
                 Email = dto.Email,
                 Password = BCrypt.Net.BCrypt.HashPassword(dto.Password),
-                TenantId = dto.TenantId
+                TenantId = tenantId
             };
 
             _context.Users.Add(user);
@@ -90,7 +100,7 @@ namespace CMS_Api.Controllers
             if (!BCrypt.Net.BCrypt.Verify(dto.Password, user.Password))
                 return Unauthorized("Invalid credentials");
 
-            var token = _jwtService.GenerateToken(user);
+            var token = _jwtService.GenerateUserToken(user.Id);
 
             return Ok(new
             {
