@@ -109,12 +109,23 @@ builder.Services.AddAuthentication(options =>
             {
                 var token = authHeader.Substring("Bearer ".Length).Trim();
                 var decodeToken = new JwtSecurityToken(jwtEncodedString: token);
-                string tenantId = decodeToken.Claims.First(c => c.Type == "tenantId").Value;
-                //string userId = decodeToken.Claims.First(c => c.Type == "userId").Value;
+                var tenantIdClaim = decodeToken.Claims.FirstOrDefault(c => c.Type == "tenantId")?.Value;
+                var userIdClaim = decodeToken.Claims.FirstOrDefault(c => c.Type == "userId")?.Value;
                 //string sessionId = decodeToken.Claims.First(c => c.Type == "sessionId").Value;
 
-                context.Request.Headers["Tenant-ID"] = tenantId;
-                //context.Request.Headers["User-ID"] = userId;
+
+
+                if (tenantIdClaim != null)
+                {
+                    context.Request.Headers["Tenant-ID"] = tenantIdClaim;
+                }
+
+                if (userIdClaim != null)
+                {
+                    context.Request.Headers["User-ID"] = userIdClaim;
+                }
+
+                
                 //context.Request.Headers["Session-ID"] = sessionId;
             }
             return Task.CompletedTask;

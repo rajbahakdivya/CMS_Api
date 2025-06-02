@@ -30,27 +30,34 @@ namespace CMS_Api.Controllers
         [HttpPost("register-tenant")]
         public async Task<IActionResult> RegisterTenant([FromBody] TenantRegistrationDto dto)
         {
-            // Check if tenant with the same PassportNumber already exists
-            if (!string.IsNullOrWhiteSpace(dto.PassportNumber) &&
-                await _context.Tenants.AnyAsync(t => t.PassportNumber == dto.PassportNumber))
+            var pvNumber = await _context.Tenants.AnyAsync(t => t.PanVatNumber == dto.PanVatNumber);
+            var activate = await _context.Tenants.AnyAsync(t => t.Activate == true);
+
+            // Check if tenant with the same PAN or VAT already exists
+            if (pvNumber && activate)
             {
-                return BadRequest("Tenant with this passport number already exists.");
+                return BadRequest("Tenant with this PAN or VAT number already exists.");
             }
 
-            // Create new tenant object
-            var tenant = new Tenant
+            if (!pvNumber)
             {
-                AccountType = dto.AccountType,
-                OrganizationName = dto.OrganizationName,
-                PassportNumber = dto.PassportNumber,
-                BarLicenseNumber = dto.BarLicenseNumber,
-                LicenseIssuingAuthority = dto.LicenseIssuingAuthority,
-            };
+                // Create new tenant object
+                var tenant = new Tenant
+                {
+                    AccountType = dto.AccountType,
+                    OrganizationName = dto.OrganizationName,
+                    //PassportNumber = dto.PassportNumber,
+                    //BarLicenseNumber = dto.BarLicenseNumber,
+                    PanVatNumber = dto.PanVatNumber,
+                };
 
-            _context.Tenants.Add(tenant);
-            await _context.SaveChangesAsync();
+                _context.Tenants.Add(tenant);
+                await _context.SaveChangesAsync();
+            }
+            
+
             var TenantExists = await _context.Tenants
-                .FirstOrDefaultAsync(u => u.BarLicenseNumber == dto.BarLicenseNumber);
+                .FirstOrDefaultAsync(u => u.PanVatNumber == dto.PanVatNumber);
 
             if (TenantExists == null)
             {
@@ -58,6 +65,7 @@ namespace CMS_Api.Controllers
             }
             var token = _authService.GenerateJwtToken(TenantExists.TenantId);
 
+           
 
             return Ok(new { errorcode = 0, message = "Tenant registered successfully", token = token });
         }
@@ -65,10 +73,10 @@ namespace CMS_Api.Controllers
         // ---------------------- REGISTER USER ----------------------
         // Endpoint: POST api/auth/register-user
         [HttpPost("register-user")]
-        public async Task<IActionResult> RegisterUser([FromHeader(Name = "Tenant-ID")] int tenantId, [FromBody] RegisterUserDto dto)
+        public async Task<IActionResult> RegisterUser([FromHeader(Name = "Tenant-ID")] int tenantId, [FromHeader(Name = "User-ID")] int userId, [FromBody] RegisterUserDto dto)
         {
-            var tenant = tenantId;
-            if (tenant == null)
+            //var tenant = tenantId;
+            if (tenantId == null)
                 return BadRequest("Invalid TenantID or TenantID missing.");
 
             var userExists = await _context.Users.AnyAsync(u => u.Email == dto.Email);
@@ -79,10 +87,25 @@ namespace CMS_Api.Controllers
             {
                 Email = dto.Email,
                 Password = BCrypt.Net.BCrypt.HashPassword(dto.Password),
-                TenantId = tenantId
+                TenantId = tenantId,
+                Name = dto.Name,
+                Role = dto.Role,
+                CreatedBy = userId == 0 ? 1 : userId
             };
 
             _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+
+            //Update Activate data from false to true
+
+            var tenantExists = await _context.Tenants.FindAsync(tenantId);
+            if (tenantExists == null)
+                return NotFound("Tenant not found");
+
+            // Update tenant contact info
+            tenantExists.Activate = true;
+
+            _context.Tenants.Update(tenantExists);
             await _context.SaveChangesAsync();
 
             var token = _jwtService.GenerateUserToken(user.Id, user.TenantId);

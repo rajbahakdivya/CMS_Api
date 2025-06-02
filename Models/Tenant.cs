@@ -9,24 +9,25 @@ namespace CMS_Api.Models
         public int TenantId { get; set; }
 
         [Required]
-        public string AccountType { get; set; }
+        public string AccountType { get; set; } 
 
         [Required]
         [StringLength(100)]
         public string OrganizationName { get; set; }
 
-        public string PassportNumber { get; set; }
-        public string BarLicenseNumber { get; set; }
-        public string LicenseIssuingAuthority { get; set; }
+        public string PanVatNumber { get; set; }
 
-        public string? PrimaryContactNumber { get; set; }
-        public string? SecondaryContactNumber { get; set; }
+        public string? PrimaryContactNumber { get; set; } //Organisation Number
+
+        public string? SecondaryContactNumber { get; set; } //Organisation Manager Number
+
         public string? Address { get; set; }
+
         public string? PrimaryUserName { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        // Navigation property
-        public ICollection<Client> Clients { get; set; }
+        public bool Activate { get; set; } = false;
+
     }
 }

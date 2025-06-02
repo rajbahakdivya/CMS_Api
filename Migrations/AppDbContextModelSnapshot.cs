@@ -82,6 +82,9 @@ namespace CMS_Api.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -99,14 +102,9 @@ namespace CMS_Api.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("OrganizationName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PassportNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("RecentCase")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -114,15 +112,13 @@ namespace CMS_Api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("TenantId")
+                    b.Property<int>("TenantId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("UpdatedAt")
+                    b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
                     b.HasKey("ClientId");
-
-                    b.HasIndex("TenantId");
 
                     b.ToTable("Clients");
                 });
@@ -190,26 +186,21 @@ namespace CMS_Api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Address")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<bool>("Activate")
+                        .HasColumnType("bit");
 
-                    b.Property<string>("BarLicenseNumber")
-                        .IsRequired()
+                    b.Property<string>("Address")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("LicenseIssuingAuthority")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("OrganizationName")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("PassportNumber")
+                    b.Property<string>("PanVatNumber")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -235,12 +226,26 @@ namespace CMS_Api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Role")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -251,8 +256,6 @@ namespace CMS_Api.Migrations
 
                     b.HasIndex("Email")
                         .IsUnique();
-
-                    b.HasIndex("TenantId");
 
                     b.ToTable("Users");
                 });
@@ -268,13 +271,6 @@ namespace CMS_Api.Migrations
                     b.Navigation("Client");
                 });
 
-            modelBuilder.Entity("CMS_Api.Models.Client", b =>
-                {
-                    b.HasOne("CMS_Api.Models.Tenant", null)
-                        .WithMany("Clients")
-                        .HasForeignKey("TenantId");
-                });
-
             modelBuilder.Entity("CMS_Api.Models.Document", b =>
                 {
                     b.HasOne("CMS_Api.Models.Client", "Client")
@@ -284,22 +280,6 @@ namespace CMS_Api.Migrations
                         .IsRequired();
 
                     b.Navigation("Client");
-                });
-
-            modelBuilder.Entity("CMS_Api.Models.User", b =>
-                {
-                    b.HasOne("CMS_Api.Models.Tenant", "Tenant")
-                        .WithMany()
-                        .HasForeignKey("TenantId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Tenant");
-                });
-
-            modelBuilder.Entity("CMS_Api.Models.Tenant", b =>
-                {
-                    b.Navigation("Clients");
                 });
 #pragma warning restore 612, 618
         }

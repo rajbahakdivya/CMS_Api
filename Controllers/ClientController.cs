@@ -3,6 +3,7 @@ using CMS_Api.Data;
 using CMS_Api.DTOs;
 using CMS_Api.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Connections.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -24,15 +25,16 @@ namespace CMS_Api.Controllers
 
         // GET: api/Client
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ClientReadDto>>> GetClients()
+        public async Task<ActionResult<IEnumerable<ClientReadDto>>> GetClients([FromHeader(Name = "User-ID")] int userId)
         {
+            //var client = await _context.Clients.FindAsync(id);
             var clients = await _context.Clients.ToListAsync();
             return Ok(_mapper.Map<IEnumerable<ClientReadDto>>(clients));
         }
 
         // GET: api/Client/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<ClientReadDto>> GetClient(int id)
+        public async Task<ActionResult<ClientReadDto>> GetClient([FromHeader(Name = "User-ID")] int userId, int id)
         {
             var client = await _context.Clients.FindAsync(id);
             if (client == null)
@@ -43,14 +45,19 @@ namespace CMS_Api.Controllers
 
         // POST: api/Client
         [HttpPost]
-        public async Task<ActionResult<ClientReadDto>> PostClient(ClientCreateDto dto)
+        public async Task<ActionResult<ClientReadDto>> PostClient([FromHeader(Name = "User-ID")] int userId, ClientProfileUpdateDto dto)
         {
             var client = _mapper.Map<Client>(dto);
+            client.CreatedBy = userId;
             _context.Clients.Add(client);
             await _context.SaveChangesAsync();
 
-            var readDto = _mapper.Map<ClientReadDto>(client);
-            return CreatedAtAction(nameof(GetClient), new { id = client.ClientId }, readDto);
+            
+            return Ok(new
+            {
+                errorcode = 0,
+                message = "Client added successfully"
+            });
         }
 
         // (For client profile)PUT: api/Client/5 
