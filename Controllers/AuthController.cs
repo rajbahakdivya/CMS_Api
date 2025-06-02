@@ -58,8 +58,8 @@ namespace CMS_Api.Controllers
             }
             var token = _authService.GenerateJwtToken(TenantExists.TenantId);
 
-            
-            return Ok(new { errorcode = 0, message = "Tenant registered successfully" , token  = token });
+
+            return Ok(new { errorcode = 0, message = "Tenant registered successfully", token = token });
         }
 
         // ---------------------- REGISTER USER ----------------------
@@ -85,8 +85,92 @@ namespace CMS_Api.Controllers
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            return Ok(new { message = "User registered successfully" });
+            var token = _jwtService.GenerateUserToken(user.Id, user.TenantId);
+
+            return Ok(new {
+                errorcode = 0,
+                message = "User registered successfully",
+                token = token
+            });
         }
+
+
+        // ---------------------- UPDATE CONTACT INFO ----------------------
+        // Endpoint: PUT api/auth/update-contact-info
+        [Authorize]
+        [HttpPut("update-contact-info")]
+        public async Task<IActionResult> UpdateContactInfo(
+            [FromHeader(Name = "Tenant-ID")] int? tenantIdHeader,
+            [FromHeader(Name = "User-ID")] int? userIdHeader,
+            [FromBody] ContactInfoDto dto)
+        {
+            // Extract tenantId and userId from JWT token claims
+            var tenantIdClaimStr = User.FindFirst("tenantId")?.Value;
+            var userIdClaimStr = User.FindFirst("userId")?.Value;
+
+            bool tenantClaimParsed = int.TryParse(tenantIdClaimStr, out int tenantIdClaim);
+            bool userClaimParsed = int.TryParse(userIdClaimStr, out int userIdClaim);
+
+            if (!tenantClaimParsed || !userClaimParsed)
+                return Unauthorized("Invalid token claims: TenantId or UserId missing");
+
+            // Determine final tenantId to use
+            int tenantIdToUse;
+            if (tenantIdHeader.HasValue)
+            {
+                if (tenantIdHeader.Value != tenantIdClaim)
+                    return Unauthorized("TenantId header does not match token claim");
+                tenantIdToUse = tenantIdHeader.Value;
+            }
+            else
+            {
+                tenantIdToUse = tenantIdClaim;
+            }
+
+            // Determine final userId to use
+            int userIdToUse;
+            if (userIdHeader.HasValue)
+            {
+                if (userIdHeader.Value != userIdClaim)
+                    return Unauthorized("UserId header does not match token claim");
+                userIdToUse = userIdHeader.Value;
+            }
+            else
+            {
+                userIdToUse = userIdClaim;
+            }
+
+            var tenant = await _context.Tenants.FindAsync(tenantIdToUse);
+            if (tenant == null)
+                return NotFound("Tenant not found");
+
+            if (dto == null)
+                return BadRequest("Contact info data is required");
+
+            // Update tenant contact info
+            tenant.PrimaryContactNumber = dto.PrimaryContactNumber;
+            tenant.SecondaryContactNumber = dto.SecondaryContactNumber;
+            tenant.Address = dto.Address;
+            tenant.PrimaryUserName = dto.PrimaryUserName;
+
+            _context.Tenants.Update(tenant);
+            await _context.SaveChangesAsync();
+
+           
+
+            // Optionally set headers
+            Response.Headers.Add("User-ID", userIdToUse.ToString());
+            Response.Headers.Add("Tenant-ID", tenantIdToUse.ToString());
+
+            return Ok(new {
+                errorcode = 0,
+                message = "Contact info updated successfully"
+                
+
+            });
+        }
+
+
 
         // ---------------------- LOGIN ----------------------
         // Endpoint: POST api/auth/login
@@ -100,69 +184,15 @@ namespace CMS_Api.Controllers
             if (!BCrypt.Net.BCrypt.Verify(dto.Password, user.Password))
                 return Unauthorized("Invalid credentials");
 
-            var token = _jwtService.GenerateUserToken(user.Id);
+            var token = _jwtService.GenerateUserToken(user.Id, user.TenantId);
 
             return Ok(new
             {
+                errorcode = 0,
                 message = "Login successful",
                 token
             });
         }
-
-        // ---------------------- GET TENANT INFO ----------------------
-        // Endpoint: GET api/auth/tenant-info
-        [Authorize]
-        [HttpGet("tenant-info")]
-        public async Task<IActionResult> GetTenantInfo()
-        {
-            var tenantId = GetTenantIdFromClaims();
-            var tenant = await _context.Tenants.FindAsync(tenantId);
-
-            if (tenant == null)
-                return NotFound("Tenant not found");
-
-            var tenantDto = new TenantInfoDto
-            {
-                TenantId = tenant.TenantId,
-                AccountType = tenant.AccountType,
-                OrganizationName = tenant.OrganizationName,
-                PassportNumber = tenant.PassportNumber,
-                BarLicenseNumber = tenant.BarLicenseNumber,
-                LicenseIssuingAuthority = tenant.LicenseIssuingAuthority,
-                PrimaryContactNumber = tenant.PrimaryContactNumber,
-                SecondaryContactNumber = tenant.SecondaryContactNumber,
-                Address = tenant.Address,
-                PrimaryUserName = tenant.PrimaryUserName,
-                CreatedAt = tenant.CreatedAt
-            };
-
-            return Ok(tenantDto);
-        }
-
-
-        // ---------------------- UPDATE CONTACT INFO ----------------------
-        // Endpoint: PUT api/auth/update-contact-info
-        [Authorize]
-        [HttpPut("update-contact-info")]
-        public async Task<IActionResult> UpdateContactInfo([FromBody] ContactInfoDto dto)
-        {
-            var tenantId = GetTenantIdFromClaims();
-            var tenant = await _context.Tenants.FindAsync(tenantId);
-
-            if (tenant == null)
-                return NotFound("Tenant not found");
-
-            tenant.PrimaryContactNumber = dto.PrimaryContactNumber;
-            tenant.SecondaryContactNumber = dto.SecondaryContactNumber;
-            tenant.Address = dto.Address;
-            tenant.PrimaryUserName = dto.PrimaryUserName;
-
-            _context.Tenants.Update(tenant);
-            await _context.SaveChangesAsync();
-
-            return Ok(new { message = "Contact info updated successfully" });
-        }
-
         // ---------------------- EXTRACT TENANT ID FROM JWT ----------------------
         private int GetTenantIdFromClaims()
         {

@@ -21,8 +21,6 @@ namespace CMS_Api.Services
             _configuration = configuration;
         }
 
-        
-
         public string GenerateJwtToken(int tenantId)
         {
             var jwtSettings = _configuration.GetSection("JwtSettings");
@@ -31,7 +29,9 @@ namespace CMS_Api.Services
             var sessionId = Guid.NewGuid().ToString();
             var claims = new[]
             {
-                new Claim("tenantId", tenantId.ToString())
+                new Claim("tenantId", tenantId.ToString()),
+                
+
             };
 
             var token = new JwtSecurityToken(

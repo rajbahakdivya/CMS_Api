@@ -7,7 +7,7 @@ namespace CMS_Api.Models
         public int ClientId { get; set; }
 
         // Dropdown: "Corporate" or "Individual"
-        public string AccountType { get; set; }
+        public string AccountType { get; set; } = "Individual";
 
         // Only relevant if AccountType is "Corporate"
         public string OrganizationName { get; set; }
